@@ -1,1 +1,1 @@
-# chatApp
+# Your Pal
