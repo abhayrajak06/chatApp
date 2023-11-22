@@ -20,6 +20,7 @@ const SignUp = () => {
   const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);
   const toast = useToast();
+  const PORT = import.meta.env.VITE_REACT_APP_PORT;
 
   const handleClick = () => setShow(!show);
 
@@ -37,8 +38,8 @@ const SignUp = () => {
     }
 
     if (pics.type === "image/jpeg" || pics.type === "image/png") {
-      const preset = import.meta.env.VITE_REACT_APP_CLOUD_NAME;
-      const cloudName = import.meta.env.VITE_REACT_APP_PRESET_NAME;
+      const preset = import.meta.env.VITE_REACT_APP_PRESET_NAME;
+      const cloudName = import.meta.env.VITE_REACT_APP_CLOUD_NAME;
 
       try {
         const formData = new FormData();
@@ -51,6 +52,8 @@ const SignUp = () => {
         );
         setLoading(false);
         setPic(response?.data?.url);
+        console.log(typeof response?.data?.url);
+        console.log(pic);
         console.log("Image uploaded successfully:", response?.data?.url);
       } catch (error) {
         console.error("Error uploading image:", error);
@@ -67,7 +70,63 @@ const SignUp = () => {
     }
   };
 
-  const submitHandler = () => {};
+  const submitHandler = async () => {
+    setLoading(true);
+    if (!name || !email || !password || !confirmPassword) {
+      toast({
+        title: "Please fill all the fields",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      setLoading(false);
+      return;
+    }
+    if (password !== confirmPassword) {
+      toast({
+        title: "Passwords do not match",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const config = {
+        headers: {
+          "Content-type": "application/json",
+        },
+      };
+      const { data } = await axios.post(
+        `${PORT}/api/v1/user/register`,
+        { name, email, password, pic },
+        config
+      );
+      toast({
+        title: "Register Successfully",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      localStorage.setItem("userInfo", JSON.stringify(data));
+      setLoading(false);
+    } catch (error) {
+      toast({
+        title: "Error Occured",
+        description: error.response.data.message,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      setLoading(false);
+    }
+  };
 
   return (
     <VStack>
