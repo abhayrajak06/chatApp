@@ -1,9 +1,10 @@
 import express from "express";
 import { isLoggedIn } from "../middlewares/authMiddleware.js";
+import { accessChatController } from "../controllers/chatControllers.js";
 
 const router = express.Router();
 
-// router.post("/",isLoggedIn, accessChatController);
+router.post("/", isLoggedIn, accessChatController);
 // router.get("/", isLoggedIn, fetchChatsController);
 // router.post("/group",isLoggedIn, createGroupChatController);
 // router.put("/rename",isLoggedIn, renameGroupController);
