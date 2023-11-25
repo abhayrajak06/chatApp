@@ -1,2 +1,2 @@
-# Your Pal
+# YourPal
 # Using MERN stack
